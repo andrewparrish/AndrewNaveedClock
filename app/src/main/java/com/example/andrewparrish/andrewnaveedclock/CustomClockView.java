@@ -61,12 +61,14 @@ public class CustomClockView extends View {
 
 
     // draw border Rect
+
+    // need to draw the rectangle in correct location
     canvas.drawRect(mWidth / 2 , mHeight / 2, mWidth + mTextPaint.getTextSize(), mHeight + mTextPaint.getTextSize(), mBorderPaint);
 
         Time currentTime = new Time();
         currentTime.setToNow();
 
-        dateTime = currentTime.format("%k:%M:%S");
+        dateTime = currentTime.format("%k:%M");
         canvas.drawText(dateTime, (mWidth / 2) , (mHeight - 100), mTextPaint);
     }
 }
