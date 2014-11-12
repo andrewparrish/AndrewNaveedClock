@@ -28,4 +28,5 @@
         android:layout_below="@+id/textViewTime"
         android:layout_centerHorizontal="true"
         android:textSize="40dp" />
+
 </RelativeLayout>

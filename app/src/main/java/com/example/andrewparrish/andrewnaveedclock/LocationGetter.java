@@ -21,13 +21,9 @@ import java.util.Date;
 public class LocationGetter extends AsyncTask<Date, Void, String> {
 
     private String image = "https://maps.googleapis.com/maps/api/staticmap?center=";
-
     private String sizing = "&zoom=16&size=400x400";
-
     private String geocode = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-
     private String apikey = "&sensor=false&key=AIzaSyAPHqBGz8pBILSMkjScxOuy_IS7xAHPiHo";
-
     private final String nyc = ",+New+York+City";
 
     private String numbernamessuck(int num){

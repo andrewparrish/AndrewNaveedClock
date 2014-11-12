@@ -3,6 +3,7 @@ package com.example.andrewparrish.andrewnaveedclock;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
@@ -16,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class Clock extends Activity {
+public class BasicClockActivity extends Activity {
 
     public TextView textViewDate;
     public TextView textViewTime;
@@ -60,7 +61,6 @@ public class Clock extends Activity {
                 }
             }
         };
-
         t.start();
     }
 
@@ -78,7 +78,7 @@ public class Clock extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.persistent_settings) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             // Set the dialog title
             builder.setTitle(R.string.dialog_settings_message)
@@ -129,12 +129,17 @@ public class Clock extends Activity {
             builder.show();
             return true;
         }
+        else if (id == R.id.clock_view_2){
+            Intent customClockIntent = new Intent(this, CustomClockActivity.class);
+            startActivity(customClockIntent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void setTime(Time today){
         String time = today.format("%k:%M:%S");
-        textViewTime.setText(today.format("%k:%M:%S"));  // Current time
+        textViewTime.setText(time);  // Current time
        //Log.i(TAG, time);
     }
 
