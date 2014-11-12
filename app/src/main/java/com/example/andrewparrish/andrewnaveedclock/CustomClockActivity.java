@@ -14,44 +14,30 @@ import java.util.TimerTask;
 /**
  * Created by Tuxedo on 11/12/14.
  */
+//TODO -> ADD CODE TO PERSIST SETTINGS IN ALL LIFECYCLE METHODS
+//TODO -> CREATE/ORGANIZE PACKAGES IN THE DIRECTORY SO THAT THINGS MAKE SENSE
 public class CustomClockActivity extends Activity {
 
-    private Timer timer;
-    private TimerTask timerTask;
     private static final String TAG = "clock-activity";
+    public CustomClockView customClock = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_clock_view);
 
-        // TODO: this bitmap should use decodeStream when HTTP GET is done -> MIGHT NEED TO BE REFACTORED
-        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.test_map_image);
 
-        // ind the view
+        // find the view
         final RelativeLayout frame = (RelativeLayout) findViewById(R.id.custom_frame);
-        final CustomClockView customClock = new CustomClockView(getApplicationContext(), mBitmap);
+        customClock = new CustomClockView(getApplicationContext());
 
         frame.addView(customClock);
 
+        //TODO -> ADD A MENU INFLATER HERE SO WE CAN TRAVERSE BETWEEN THE DIFFERENT VIEWS
+
+
         //instantiate the time object necessary for the clock
         callAsynchronousTask();
-
-// TODO: DELETE THIS WHEN EVERYTHING HAS BEEN TESTED
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                    while(true) {
-//                        customClock.postInvalidate();
-//                        try {
-//                            Thread.sleep(60000);
-//                        } catch (InterruptedException e) {
-//                            Log.i(TAG, "InterruptedException");
-//                        }
-//                    }
-//            }
-//        }).start();
     }
 
     public void callAsynchronousTask() {
@@ -66,6 +52,7 @@ public class CustomClockActivity extends Activity {
                             GoogleJSONAsyncBackgroundTask performBackgroundTask = new GoogleJSONAsyncBackgroundTask();
                             // PerformBackgroundTask this class is the class that extends AsyncTask
                             performBackgroundTask.execute();
+                            customClock.invalidate();
                         } catch (Exception e) {
                             Log.e(TAG, "EXCEPTION THROWN");
                         }
@@ -74,7 +61,7 @@ public class CustomClockActivity extends Activity {
             }
         };
 
-        timer.schedule(doAsynchronousTask, 0, 60000); //execute in every 60000 ms
+        timer.schedule(doAsynchronousTask, 0, 10000); //execute in every 60000 ms
     }
 }
 

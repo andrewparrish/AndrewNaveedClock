@@ -2,6 +2,7 @@ package com.example.andrewparrish.andrewnaveedclock;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,7 +15,7 @@ import android.view.View;
 public class CustomClockView extends View {
 
     //variables needed for onDraw
-    private Bitmap mBitmap;
+    private static Bitmap mBitmap;
     private Paint mTextPaint;
     private Paint mBorderPaint;
     private int mWidth;
@@ -22,23 +23,33 @@ public class CustomClockView extends View {
     private String dateTime;
 
 
-    public CustomClockView(Context context, Bitmap mBitmap) {
+    public CustomClockView(Context context) {
         super(context);
-        this.mBitmap = mBitmap.createScaledBitmap(mBitmap, 600, 800, false);
+        init();
+    }
+   private void init(){
+       // get the test image first
+        this.mBitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.test_map_image);
 
+       //set the paint object for the text field
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setColor(Color.RED);
         mTextPaint.setTextSize(80);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
 
-
+        // set the paint object for the Border Rectangle around the text field
         mBorderPaint = new Paint();
         mBorderPaint.setColor(Color.GRAY);
         mBorderPaint.measureText("00:00:00");
-
-
     }
 
+    //static setter because there will only ever be one BitMap in existence for the app
+    public static void setBitMap(Bitmap bMap){
+        mBitmap = mBitmap.createScaledBitmap(bMap, 600, 800, false);
+    }
+
+    //method that measures the size of the device and returns the dimensions for the canvas
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
@@ -54,7 +65,7 @@ public class CustomClockView extends View {
 
      //draw bitmap
         // center the image
-        int cx = (mWidth - mBitmap.getWidth()) >> 1; // same as width / 2
+        int cx = (mWidth - mBitmap.getWidth()) >> 1; // same as width * .5
         int cy = (mHeight - mBitmap.getHeight()) >> 1;
 
         canvas.drawBitmap(mBitmap, cx, cy, null);
@@ -62,6 +73,7 @@ public class CustomClockView extends View {
 
     // draw border Rect
 
+    //TODO -> THIS DOES NOT RENDER IN THE CORRECT LOCATION.
     // need to draw the rectangle in correct location
     canvas.drawRect(mWidth / 2 , mHeight / 2, mWidth + mTextPaint.getTextSize(), mHeight + mTextPaint.getTextSize(), mBorderPaint);
 

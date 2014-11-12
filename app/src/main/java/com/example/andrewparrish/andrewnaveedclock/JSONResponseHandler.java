@@ -17,9 +17,10 @@ import java.util.List;
  */
 public class JSONResponseHandler implements ResponseHandler<Coords> {
 
-    private static final String LOCATION_TAG = "location";
-    private static final String LATITUDE_TAG = "lat";
-    private static final String LONGITUDE_TAG = "lng";
+    private final String RESULTS_TAG = "results";
+    private final String LOCATION_TAG = "location";
+    private final String LATITUDE_TAG = "lat";
+    private final String LONGITUDE_TAG = "lng";
 
 
     @Override
@@ -31,8 +32,11 @@ public class JSONResponseHandler implements ResponseHandler<Coords> {
         try {
 
             // Get top-level JSON Object - a "results" Array
-            JSONArray resultsArray = (JSONArray) new JSONTokener(
+            JSONObject jsonObj = (JSONObject) new JSONTokener(
                     JSONResponse).nextValue();
+
+            // get the array in the top level of the jsonObj
+            JSONArray resultsArray = (JSONArray) jsonObj.get(RESULTS_TAG);
 
             // Extract value of "geometry" key -- a JSON object
             JSONObject geometry = (JSONObject) resultsArray.get(0);

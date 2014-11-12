@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
+//TODO -> ADD CODE TO PERSIST SETTINGS IN ALL LIFECYCLE METHODS
 public class BasicClockActivity extends Activity {
 
     public TextView textViewDate;
@@ -79,6 +79,7 @@ public class BasicClockActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.persistent_settings) {
+            //TODO -> ABSTRACT THIS FUNCTIONALITY INTO A SEPERATE CLASS SO THE CUSTOM VIEW CAN USE IT
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             // Set the dialog title
             builder.setTitle(R.string.dialog_settings_message)
@@ -105,7 +106,7 @@ public class BasicClockActivity extends Activity {
                             // User clicked OK, so save the mSelectedItems results somewhere
                             // or return them to the component that opened the dialog
                             Log.i(TAG, "in positive button click callback ");
-
+                    //TODO -> FILL IN THE SELECTED OPTIONS AND TIE THEM TO BUNDLE VARIABLES
                             if(mSelectedItems.contains(0)){
                                 //fill in later -- if user selected "timezone"
                             }

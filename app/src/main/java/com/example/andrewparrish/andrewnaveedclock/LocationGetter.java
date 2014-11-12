@@ -18,6 +18,12 @@ import java.util.Date;
 /**
  * Created by andrewparrish on 11/11/14.
  */
+
+//TODO -> MAKE THIS A UTILITY CLASS, INSTANTIATE IT IN GOOGLEJSONASYNCBACKGROUND TASK AS A PRIVATE OBJECT
+//TODO -> YOU COULD MAKE THESE METHODS STATIC IF IT MAKES THINGS EASIER (AVOID INSTANTIATION)
+//TODO -> REMOVE ALL TRACES OF ASYNC CALLS IN HERE
+//TODO -> RENAME COMPILATION UNIT TO GEOCODER_UTILITY
+
 public class LocationGetter extends AsyncTask<Date, Void, String> {
 
     private String image = "https://maps.googleapis.com/maps/api/staticmap?center=";

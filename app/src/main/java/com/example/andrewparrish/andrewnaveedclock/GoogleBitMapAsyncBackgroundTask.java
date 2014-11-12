@@ -1,25 +1,33 @@
 package com.example.andrewparrish.andrewnaveedclock;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
+
+import java.io.InputStream;
 
 /**
  * Created by Tuxedo on 11/12/14.
  */
 public class GoogleBitMapAsyncBackgroundTask extends AsyncTask<String, Void, Bitmap> {
-
+    private static final String TAG = "clock-activity";
 
     @Override
     protected Bitmap doInBackground(String... params) {
-        //todo: everything
-        // Make Connection
+        //get params
+        String url = params[0];
+        Bitmap bMap = null;
+        // Make Connection and get inputStream
+        try {
+            InputStream in = new java.net.URL(url).openStream();
+            bMap = BitmapFactory.decodeStream(in);
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+        }
 
-        // Open inputStream
-
-        // Pass inputStream into a new class called BitMapResponseHandler
-        // which decodes the byte stream and returns a BitMap IMage
-
-        return null;
+        return bMap;
     }
 
     @Override
@@ -27,7 +35,6 @@ public class GoogleBitMapAsyncBackgroundTask extends AsyncTask<String, Void, Bit
 
         // with the bitMap, go ahead and update the reference to the bitMap object
         // in CustomClockView
-
-        return;
+        CustomClockView.setBitMap(bMap);
     }
 }
