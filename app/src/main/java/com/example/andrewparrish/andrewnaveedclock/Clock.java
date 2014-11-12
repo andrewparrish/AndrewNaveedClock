@@ -1,6 +1,8 @@
 package com.example.andrewparrish.andrewnaveedclock;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,7 +23,9 @@ public class Clock extends Activity {
     public RelativeLayout parentFrame;
     private Timer timer;
     private TimerTask timerTask;
-    private static final String LOG = "clock-activity";
+    private static final String TAG = "clock-activity";
+
+    ArrayList<Integer> mSelectedItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +35,9 @@ public class Clock extends Activity {
         parentFrame = (RelativeLayout) findViewById(R.id.parentFrame);
         textViewDate = (TextView) findViewById(R.id.textViewDate);
         textViewTime = (TextView) findViewById(R.id.textViewTime);
+        mSelectedItems = new ArrayList<Integer>();
 
         //instantiate the time object necessary for the clock
-
         Thread t = new Thread() {
 
             @Override
@@ -74,6 +79,54 @@ public class Clock extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            // Set the dialog title
+            builder.setTitle(R.string.dialog_settings_message)
+                    // Specify the list array, the items to be selected by default (null for none),
+                    // and the listener through which to receive callbacks when items are selected
+                    .setMultiChoiceItems(R.array.settings, null,
+                            new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which,
+                                                    boolean isChecked) {
+                                    if (isChecked) {
+                                        // If the user checked the item, add it to the selected items
+                                        mSelectedItems.add(which);
+                                    } else if (mSelectedItems.contains(which)) {
+                                        // Else, if the item is already in the array, remove it
+                                        mSelectedItems.remove(Integer.valueOf(which));
+                                    }
+                                }
+                            })
+                            // Set the action buttons
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User clicked OK, so save the mSelectedItems results somewhere
+                            // or return them to the component that opened the dialog
+                            Log.i(TAG, "in positive button click callback ");
+
+                            if(mSelectedItems.contains(0)){
+                                //fill in later -- if user selected "timezone"
+                            }
+                            if (mSelectedItems.contains(1)){
+                                //fill in later -- if user selected "military time"
+                            }
+                            if (mSelectedItems.contains(2)){
+                                //fill in later -- if user selected "Color"
+
+                            }
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.i(TAG, "in negative button click callback ");
+                            mSelectedItems.clear();
+                        }
+                    });
+
+            builder.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -82,12 +135,12 @@ public class Clock extends Activity {
     private void setTime(Time today){
         String time = today.format("%k:%M:%S");
         textViewTime.setText(today.format("%k:%M:%S"));  // Current time
-        Log.i(LOG, time);
+       //Log.i(TAG, time);
     }
 
     private void setDate(Time today){
         String date = today.month + "/" + today.monthDay + "/" + today.year + "";
         textViewDate.setText(date);
-        Log.i(LOG, date);
+        //Log.i(TAG, date);
     }
 }
