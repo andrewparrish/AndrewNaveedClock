@@ -2,6 +2,7 @@ package com.example.andrewparrish.andrewnaveedclock;
 
 
 import android.text.format.Time;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -64,7 +65,7 @@ public class Geocoder_Utility {
         if (nyc){
             url = numbernamessuck(hours)+"+Ave,+"+numbernamessuck(minutes)+"+St"+nycurl;
         }else{
-            url = numbernamessuck(hours)+"St,+"+numbernamessuck(minutes)+"+St,+USA";
+            url = numbernamessuck(hours)+"+St,+"+numbernamessuck(minutes)+"+St,+USA";
         }
 
         return url;
@@ -93,38 +94,44 @@ public class Geocoder_Utility {
         }
 
         url+=apikey;
-        HttpResponse response;
-        HttpClient myClient = new DefaultHttpClient();
-        HttpPost myConnection = new HttpPost(url);
-        String str = "";
+        return url;
 
-        try{
-            response = myClient.execute(myConnection);
-            str = EntityUtils.toString(response.getEntity(), "UTF-8");
-        }catch (ClientProtocolException e){
-            e.printStackTrace();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        String longitude = "";
-        String latitude = "";
-
-        try{
-            JSONArray array = new JSONArray(str);
-            json = array.getJSONObject(0);
-            JSONObject geocode = json.getJSONObject("geometry").getJSONObject("location");
-
-            latitude = (String) geocode.get("lat");
-            longitude = (String) geocode.get("lng");
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
-
-
-        imageurl+=latitude+","+longitude+sizing;
-
-        return imageurl;
+//        Log.d("URL", url);
+//
+//        HttpResponse response;
+//        HttpClient myClient = new DefaultHttpClient();
+//        HttpPost myConnection = new HttpPost(url);
+//        String str = "";
+//
+//        try{
+//            response = myClient.execute(myConnection);
+//            str = EntityUtils.toString(response.getEntity(), "UTF-8");
+//        }catch (ClientProtocolException e){
+//            e.printStackTrace();
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
+//
+//        String longitude = "";
+//        String latitude = "";
+//
+//        try{
+//            JSONObject map = new JSONObject(str);
+//            Log.d("URL", map.toString());
+//            JSONArray array = map.getJSONArray("results");
+//            json = array.getJSONObject(0);
+//            JSONObject geocode = json.getJSONObject("geometry").getJSONObject("location");
+//
+//            latitude = String.valueOf(geocode.get("lat"));
+//            longitude = String.valueOf(geocode.get("lng"));
+//        }catch (JSONException e){
+//            e.printStackTrace();
+//        }
+//
+//
+//        imageurl+=latitude+","+longitude+sizing;
+//
+//        return imageurl;
     }
 
 }

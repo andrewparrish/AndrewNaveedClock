@@ -38,7 +38,7 @@ public class GoogleJSONAsyncBackgroundTask extends AsyncTask< Void,  Void , Coor
         //Get URL here
         String url = Geocoder_Utility.get_url(time);
 
-        Log.println(1, "URL", url);
+        Log.d("URL", url);
 
         HttpGet request = new HttpGet(url);
         JSONResponseHandler responseHandler = new JSONResponseHandler();
