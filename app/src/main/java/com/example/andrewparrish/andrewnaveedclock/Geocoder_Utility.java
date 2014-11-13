@@ -1,6 +1,7 @@
 package com.example.andrewparrish.andrewnaveedclock;
 
-import android.os.AsyncTask;
+
+import android.text.format.Time;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -13,26 +14,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Date;
 
 /**
- * Created by andrewparrish on 11/11/14.
+ * Created by andrewparrish on 11/12/14.
  */
+public class Geocoder_Utility {
 
-//TODO -> MAKE THIS A UTILITY CLASS, INSTANTIATE IT IN GOOGLEJSONASYNCBACKGROUND TASK AS A PRIVATE OBJECT
-//TODO -> YOU COULD MAKE THESE METHODS STATIC IF IT MAKES THINGS EASIER (AVOID INSTANTIATION)
-//TODO -> REMOVE ALL TRACES OF ASYNC CALLS IN HERE
-//TODO -> RENAME COMPILATION UNIT TO GEOCODER_UTILITY
+    private static String image = "https://maps.googleapis.com/maps/api/staticmap?center=";
+    private static String sizing = "&zoom=16&size=400x400";
+    private static String geocode = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+    private static String apikey = "&sensor=false&key=AIzaSyAPHqBGz8pBILSMkjScxOuy_IS7xAHPiHo";
+    private static String nycurl = ",+New+York+City";
 
-public class LocationGetter extends AsyncTask<Date, Void, String> {
-
-    private String image = "https://maps.googleapis.com/maps/api/staticmap?center=";
-    private String sizing = "&zoom=16&size=400x400";
-    private String geocode = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-    private String apikey = "&sensor=false&key=AIzaSyAPHqBGz8pBILSMkjScxOuy_IS7xAHPiHo";
-    private String nyc = ",+New+York+City";
-
-    private String numbernamessuck(int num){
+    private static String numbernamessuck(int num){
         if (num < 10){
             if (num >= 4){
                 return num + "th";
@@ -64,11 +58,11 @@ public class LocationGetter extends AsyncTask<Date, Void, String> {
         }
     }
 
-    private String makedaturl(boolean nyc, int minutes, int hours){
+    private static String makedaturl(boolean nyc, int minutes, int hours){
         String url = null;
 
         if (nyc){
-            url = numbernamessuck(hours)+"+Ave,+"+numbernamessuck(minutes)+"+St"+nyc;
+            url = numbernamessuck(hours)+"+Ave,+"+numbernamessuck(minutes)+"+St"+nycurl;
         }else{
             url = numbernamessuck(hours)+"St,+"+numbernamessuck(minutes)+"+St,+USA";
         }
@@ -76,31 +70,29 @@ public class LocationGetter extends AsyncTask<Date, Void, String> {
         return url;
     }
 
-    @Override
-    protected String doInBackground(Date... params) {
-        Date time = params[0];
+    public static String get_url(Time time) {
         JSONObject json = null;
         String url = geocode;
         String imageurl = image;
+
         //Upper NYC
-        if (time.getMinutes() >= 24){
-            url+=makedaturl(true, time.getMinutes(), time.getHours());
-        //Mostly upper NYC
-        }else if (time.getMinutes() >= 15){
-            if (time.getHours() <= 11){
+        if (time.minute >= 24){
+            url+=makedaturl(true, time.minute, time.hour);
+            //Mostly upper NYC
+        }else if (time.minute >= 15){
+            if (time.hour <= 11){
                 //NYC will work
-                url+=makedaturl(true, time.getMinutes(), time.getHours());
+                url+=makedaturl(true, time.minute, time.hour);
             }else{
                 //Do other
-                url+=makedaturl(false, time.getMinutes(), time.getHours());
+                url+=makedaturl(false, time.minute, time.hour);
             }
-        //No Good Streets-Do Other\
+            //No Good Streets-Do Other\
         }else{
-            url+=makedaturl(false, time.getMinutes(), time.getHours());
+            url+=makedaturl(false, time.minute, time.hour);
         }
 
         url+=apikey;
-
         HttpResponse response;
         HttpClient myClient = new DefaultHttpClient();
         HttpPost myConnection = new HttpPost(url);
@@ -134,4 +126,5 @@ public class LocationGetter extends AsyncTask<Date, Void, String> {
 
         return imageurl;
     }
+
 }

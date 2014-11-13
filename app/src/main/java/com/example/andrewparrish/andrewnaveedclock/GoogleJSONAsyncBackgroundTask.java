@@ -2,10 +2,13 @@ package com.example.andrewparrish.andrewnaveedclock;
 
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
+import android.text.format.Time;
 import android.util.Log;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import java.io.IOException;
+import com.example.andrewparrish.andrewnaveedclock.Geocoder_Utility;
+
 
 
 /**
@@ -29,10 +32,15 @@ public class GoogleJSONAsyncBackgroundTask extends AsyncTask< Void,  Void , Coor
           //TODO: ANDREW -> UNCOMMENT TO set time and parse, CALL GEOCODER METHODS HERE TO CONSTRUCT
           //TODO: FULL URL SO THE HTTPREQUEST PULLS FRESH INFORMATION
 
-//        Time time = new Time(Time.getCurrentTimezone());
-//        time.setToNow();
+        Time time = new Time(Time.getCurrentTimezone());
+        time.setToNow();
 
-        HttpGet request = new HttpGet(URL);
+        //Get URL here
+        String url = Geocoder_Utility.get_url(time);
+
+        Log.println(1, "URL", url);
+
+        HttpGet request = new HttpGet(url);
         JSONResponseHandler responseHandler = new JSONResponseHandler();
 
         try {
