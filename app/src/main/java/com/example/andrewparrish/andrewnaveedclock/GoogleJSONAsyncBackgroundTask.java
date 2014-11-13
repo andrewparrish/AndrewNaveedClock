@@ -73,7 +73,15 @@ public class GoogleJSONAsyncBackgroundTask extends AsyncTask< Void,  Void , Coor
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            if (mClient != null) {
+                try {
+                    mClient.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
     }
 
 

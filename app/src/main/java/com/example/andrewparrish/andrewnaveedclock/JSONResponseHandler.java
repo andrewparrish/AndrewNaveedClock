@@ -33,11 +33,11 @@ public class JSONResponseHandler implements ResponseHandler<Coords> {
                 .handleResponse(response);
         try {
             JSONObject json = null;
-            Log.d("JSON", JSONResponse);
+//            Log.d("JSON", JSONResponse);
 
             // Get top-level JSON Object - a "results" Array
             JSONObject map = new JSONObject(JSONResponse);
-            Log.d("URL", map.toString());
+//            Log.d("URL", map.toString());
             JSONArray array = map.getJSONArray("results");
             json = array.getJSONObject(0);
             JSONObject geocode = json.getJSONObject("geometry").getJSONObject("location");
