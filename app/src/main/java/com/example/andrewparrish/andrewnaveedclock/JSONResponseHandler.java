@@ -1,5 +1,7 @@
 package com.example.andrewparrish.andrewnaveedclock;
 
+import android.util.Log;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
@@ -30,25 +32,19 @@ public class JSONResponseHandler implements ResponseHandler<Coords> {
         String JSONResponse = new BasicResponseHandler()
                 .handleResponse(response);
         try {
+            JSONObject json = null;
+            Log.d("JSON", JSONResponse);
 
             // Get top-level JSON Object - a "results" Array
-            JSONObject jsonObj = (JSONObject) new JSONTokener(
-                    JSONResponse).nextValue();
+            JSONObject map = new JSONObject(JSONResponse);
+            Log.d("URL", map.toString());
+            JSONArray array = map.getJSONArray("results");
+            json = array.getJSONObject(0);
+            JSONObject geocode = json.getJSONObject("geometry").getJSONObject("location");
 
-            // get the array in the top level of the jsonObj
-            JSONArray resultsArray = (JSONArray) jsonObj.get(RESULTS_TAG);
+            String latitude = String.valueOf(geocode.get("lat"));
+            String longitude = String.valueOf(geocode.get("lng"));
 
-            // Extract value of "geometry" key -- a JSON object
-            JSONObject geometry = (JSONObject) resultsArray.get(0);
-
-            // Extract the nested "location" key -- a JSON Object
-            JSONObject location = (JSONObject) geometry.get(LOCATION_TAG);
-
-            // Extract Coordinates
-            String latitude = (String) geometry.get(LATITUDE_TAG);
-            String longitude = (String) geometry.get(LONGITUDE_TAG);
-
-            // Summarize data as a string and add it to result
             result = new Coords(latitude,longitude);
             return result;
 
