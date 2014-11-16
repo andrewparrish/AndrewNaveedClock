@@ -17,7 +17,6 @@ public class CustomClockView extends View {
     //variables needed for onDraw
     private static Bitmap mBitmap;
     private Paint mTextPaint;
-    private Paint mBorderPaint;
     private int mWidth;
     private int mHeight;
     private String dateTime;
@@ -38,10 +37,6 @@ public class CustomClockView extends View {
         mTextPaint.setTextSize(80);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
 
-        // set the paint object for the Border Rectangle around the text field
-        mBorderPaint = new Paint();
-        mBorderPaint.setColor(Color.GRAY);
-        mBorderPaint.measureText("00:00:00");
     }
 
     //static setter because there will only ever be one BitMap in existence for the app
@@ -70,12 +65,6 @@ public class CustomClockView extends View {
 
         canvas.drawBitmap(mBitmap, cx, cy, null);
 
-
-    // draw border Rect
-
-    //TODO -> THIS DOES NOT RENDER IN THE CORRECT LOCATION.
-    // need to draw the rectangle in correct location
-    canvas.drawRect(mWidth / 2 , mHeight / 2, mWidth + mTextPaint.getTextSize(), mHeight + mTextPaint.getTextSize(), mBorderPaint);
 
         Time currentTime = new Time();
         currentTime.setToNow();

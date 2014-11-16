@@ -15,7 +15,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Time"
         android:id="@+id/textViewTime"
-        android:textSize="80dp"
+        android:textSize="65dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 

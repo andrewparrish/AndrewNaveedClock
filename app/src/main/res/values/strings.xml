@@ -2,8 +2,12 @@
 <resources>
 
     <string name="app_name">AndrewNaveedClock</string>
-    <string name="hello_world">Hello world!</string>
     <string name="persistent_settings">Clock Settings</string>
-    <string name="custom_clock_view">Second Clock View</string>
+    <string name="basic_clock_view">Basic Clock View</string>
+    <string name="custom_clock_view">Alternate Clock View</string>
     <string name="dialog_settings_message">Change Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

@@ -11,8 +11,6 @@ import java.io.IOException;
  */
 public class Geocoder_Utility {
 
-    private static String image = "https://maps.googleapis.com/maps/api/staticmap?center=";
-    private static String sizing = "&zoom=16&size=400x400";
     private static String geocode = "https://maps.googleapis.com/maps/api/geocode/json?address=";
     private static String apikey = "&sensor=false&key=AIzaSyAPHqBGz8pBILSMkjScxOuy_IS7xAHPiHo";
     private static String nycurl = ",+New+York+City";
@@ -63,9 +61,7 @@ public class Geocoder_Utility {
 
     public static String get_url(Time time) {
         int hour = time.hour % 12;
-        JSONObject json = null;
         String url = geocode;
-        String imageurl = image;
 
         //Upper NYC
         if (time.minute >= 24){

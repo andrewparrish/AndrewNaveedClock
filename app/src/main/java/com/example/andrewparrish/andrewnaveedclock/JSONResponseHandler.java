@@ -19,12 +19,6 @@ import java.util.List;
  */
 public class JSONResponseHandler implements ResponseHandler<Coords> {
 
-    private final String RESULTS_TAG = "results";
-    private final String LOCATION_TAG = "location";
-    private final String LATITUDE_TAG = "lat";
-    private final String LONGITUDE_TAG = "lng";
-
-
     @Override
     public Coords handleResponse(HttpResponse response)
             throws ClientProtocolException, IOException {

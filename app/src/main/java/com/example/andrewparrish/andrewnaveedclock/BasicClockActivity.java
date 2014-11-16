@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
@@ -16,17 +17,20 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//TODO -> ADD CODE TO PERSIST SETTINGS IN ALL LIFECYCLE METHODS
 public class BasicClockActivity extends Activity {
 
     public TextView textViewDate;
     public TextView textViewTime;
     public RelativeLayout parentFrame;
-    private Timer timer;
-    private TimerTask timerTask;
-    private static final String TAG = "clock-activity";
 
-    ArrayList<Integer> mSelectedItems;
+    private static int SETTINGS_REQUEST = 100;
+
+    private boolean militaryTime = false;
+    private int timeColor = Color.BLACK;
+
+    private static final String MILITARY_TIME_BOOLEAN = "military_time_boolean";
+    private static final String TIME_COLOR_INTEGER = "time_color_integer";
+    private static final String TAG = "clock-activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +40,11 @@ public class BasicClockActivity extends Activity {
         parentFrame = (RelativeLayout) findViewById(R.id.parentFrame);
         textViewDate = (TextView) findViewById(R.id.textViewDate);
         textViewTime = (TextView) findViewById(R.id.textViewTime);
-        mSelectedItems = new ArrayList<Integer>();
 
+        if (savedInstanceState != null){
+            savedInstanceState.getBoolean(MILITARY_TIME_BOOLEAN);
+            savedInstanceState.getInt(TIME_COLOR_INTEGER);
+        }
         //instantiate the time object necessary for the clock
         Thread t = new Thread() {
 
@@ -52,8 +59,8 @@ public class BasicClockActivity extends Activity {
                                 Time today = new Time(Time.getCurrentTimezone());
                                 today.setToNow();
                                 // update TextView here!
-                                setTime(today);
-                                setDate(today);
+                                setTime(today, timeColor);
+                                setDate(today, timeColor);
                             }
                         });
                     }
@@ -79,74 +86,70 @@ public class BasicClockActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.persistent_settings) {
-            //TODO -> ABSTRACT THIS FUNCTIONALITY INTO A SEPERATE CLASS SO THE CUSTOM VIEW CAN USE IT
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // Set the dialog title
-            builder.setTitle(R.string.dialog_settings_message)
-                    // Specify the list array, the items to be selected by default (null for none),
-                    // and the listener through which to receive callbacks when items are selected
-                    .setMultiChoiceItems(R.array.settings, null,
-                            new DialogInterface.OnMultiChoiceClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which,
-                                                    boolean isChecked) {
-                                    if (isChecked) {
-                                        // If the user checked the item, add it to the selected items
-                                        mSelectedItems.add(which);
-                                    } else if (mSelectedItems.contains(which)) {
-                                        // Else, if the item is already in the array, remove it
-                                        mSelectedItems.remove(Integer.valueOf(which));
-                                    }
-                                }
-                            })
-                            // Set the action buttons
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User clicked OK, so save the mSelectedItems results somewhere
-                            // or return them to the component that opened the dialog
-                            Log.i(TAG, "in positive button click callback ");
-                    //TODO -> FILL IN THE SELECTED OPTIONS AND TIE THEM TO BUNDLE VARIABLES
-                            if(mSelectedItems.contains(0)){
-                                //fill in later -- if user selected "timezone"
-                            }
-                            if (mSelectedItems.contains(1)){
-                                //fill in later -- if user selected "military time"
-                            }
-                            if (mSelectedItems.contains(2)){
-                                //fill in later -- if user selected "Color"
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            settingsIntent.putExtra(MILITARY_TIME_BOOLEAN, militaryTime);
+            settingsIntent.putExtra(TIME_COLOR_INTEGER, timeColor);
 
-                            }
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            Log.i(TAG, "in negative button click callback ");
-                            mSelectedItems.clear();
-                        }
-                    });
-
-            builder.show();
+            startActivityForResult(settingsIntent, SETTINGS_REQUEST);
             return true;
         }
         else if (id == R.id.clock_view_2){
             Intent customClockIntent = new Intent(this, CustomClockActivity.class);
+            customClockIntent.putExtra(MILITARY_TIME_BOOLEAN, militaryTime);
+            customClockIntent.putExtra(TIME_COLOR_INTEGER, timeColor);
+
             startActivity(customClockIntent);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void setTime(Time today){
-        String time = today.format("%k:%M:%S");
-        textViewTime.setText(time);  // Current time
-       //Log.i(TAG, time);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == SETTINGS_REQUEST) {
+            if(resultCode == RESULT_OK) {
+               Bundle bundle = data.getExtras();
+               militaryTime = bundle.getBoolean(MILITARY_TIME_BOOLEAN);
+
+                if(bundle.getInt(TIME_COLOR_INTEGER) != 0) {
+                    timeColor = bundle.getInt(TIME_COLOR_INTEGER);
+                }
+
+            }
+        }
+
+
+
     }
 
-    private void setDate(Time today){
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save state information with a collection of key-value pairs
+        savedInstanceState.putBoolean(MILITARY_TIME_BOOLEAN, militaryTime);
+        savedInstanceState.putInt(TIME_COLOR_INTEGER, timeColor);
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    private void setTime(Time today, int color){
+        String time = null;
+
+        if(militaryTime == true) {
+             time = today.format("%k:%M:%S");
+        }
+        else{
+             time = today.format("%I:%M:%S %p");
+        }
+
+        textViewTime.setText(time);  // Current time
+        textViewTime.setTextColor(color);
+    }
+
+    private void setDate(Time today, int color){
         String date = today.month + "/" + today.monthDay + "/" + today.year + "";
+        textViewDate.setTextColor(color);
         textViewDate.setText(date);
-        //Log.i(TAG, date);
     }
 }
