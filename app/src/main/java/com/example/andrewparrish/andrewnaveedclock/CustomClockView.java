@@ -7,15 +7,19 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.nfc.Tag;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 
 /**
  * Created by Tuxedo on 11/12/14.
  */
 public class CustomClockView extends View {
+
+    private static final String TAG = "clock-activity";
 
     //preferences
     SharedPreferences preferences;
@@ -86,7 +90,12 @@ public class CustomClockView extends View {
         currentTime.setToNow();
         dateTime = setTime(currentTime);
 
-        canvas.drawText(dateTime, (mWidth / 2) , (mHeight - 100), mTextPaint);
+        colorTime = preferences.getInt(TIME_COLOR_INTEGER, Color.BLACK);
+        mTextPaint.setColor(colorTime);
+
+        Log.e(TAG, "CUSTOM VIEW COLOR = "+ colorTime);
+        canvas.drawText(dateTime, (mWidth / 2), (mHeight - 100), mTextPaint);
+
     }
 
     private String setTime(Time today){
@@ -97,5 +106,6 @@ public class CustomClockView extends View {
         else{
            return time = today.format("%I:%M:%S %p");
         }
+
     }
 }

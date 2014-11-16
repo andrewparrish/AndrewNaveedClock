@@ -50,9 +50,9 @@ public class GoogleJSONAsyncBackgroundTask extends AsyncTask< Void,  Void , Coor
             String baseURL = "https://maps.googleapis.com/maps/api/staticmap?center=";
             String sizing = "&zoom=16&size=400x400";
             String markerLocation = "&markers=color:red%7Clabel:HERE%7C"+result.toString() + "";
-            Log.e(TAG, "Coord toString() is: " + result.toString());
+           //Log.e(TAG, "Coord toString() is: " + result.toString());
             String imageURL = baseURL + "" + result.toString() + "" + sizing + "" + markerLocation + "";
-            Log.i(TAG, "imageURL is: " + imageURL);
+           // Log.i(TAG, "imageURL is: " + imageURL);
 
 
             // Launch second async task

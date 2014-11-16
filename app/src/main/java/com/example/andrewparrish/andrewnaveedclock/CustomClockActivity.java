@@ -121,6 +121,8 @@ public class CustomClockActivity extends Activity {
             if(resultCode == RESULT_OK) {
                 militaryTime = preferences.getBoolean(MILITARY_TIME_BOOLEAN, false);
                 timeColor = preferences.getInt(TIME_COLOR_INTEGER, Color.BLACK);
+                Log.e(TAG, "color is " + timeColor);
+                customClock.invalidate();
             }
         }
     }
