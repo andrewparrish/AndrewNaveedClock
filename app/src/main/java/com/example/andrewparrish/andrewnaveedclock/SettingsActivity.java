@@ -2,8 +2,10 @@ package com.example.andrewparrish.andrewnaveedclock;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +19,8 @@ public class SettingsActivity extends Activity {
     private static final String TIME_COLOR_INTEGER = "time_color_integer";
     private static final String TAG = "clock-activity";
 
+    SharedPreferences preferences;
+
     private boolean timeSettingChanged;
     private boolean militaryTime;
     public int colorTime;
@@ -28,17 +32,14 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        militaryTime = preferences.getBoolean(MILITARY_TIME_BOOLEAN, false);
+        colorTime = preferences.getInt(TIME_COLOR_INTEGER, Color.BLACK);
+
         rg_time = (RadioGroup) findViewById(R.id.radioTime);
         rg_color = (RadioGroup) findViewById(R.id.radioColor);
 
-        if (savedInstanceState != null){
-            militaryTime = savedInstanceState.getBoolean(MILITARY_TIME_BOOLEAN);
-            colorTime = savedInstanceState.getInt(TIME_COLOR_INTEGER);
-        }
-
-        Log.e(TAG, "onCreate method called");
-
-        if (militaryTime == true){
+        if (militaryTime) {
             rg_time.check(R.id.rb_militaryTime);
         }
         else{
@@ -123,16 +124,14 @@ public class SettingsActivity extends Activity {
         Button okButton = (Button) findViewById(R.id.button_ok);
         okButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
+
+                // Increment the counter
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putInt(TIME_COLOR_INTEGER, colorTime);
+                editor.putBoolean(MILITARY_TIME_BOOLEAN, militaryTime);
+                editor.commit(); // Very important
+
                 Intent data = getIntent();
-
-                if (timeSettingChanged == true) {
-                    data.putExtra(MILITARY_TIME_BOOLEAN, militaryTime);
-                }
-
-                if (colorTime != 0) {
-                    data.putExtra(TIME_COLOR_INTEGER, colorTime);
-                }
-
                 setResult(RESULT_OK, data);
                 finish();
             }

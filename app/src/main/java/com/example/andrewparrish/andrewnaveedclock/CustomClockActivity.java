@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,30 +23,36 @@ import java.util.TimerTask;
 /**
  * Created by Tuxedo on 11/12/14.
  */
-//TODO -> ADD CODE TO PERSIST SETTINGS IN ALL LIFECYCLE METHODS
-//TODO -> CREATE/ORGANIZE PACKAGES IN THE DIRECTORY SO THAT THINGS MAKE SENSE
+
 public class CustomClockActivity extends Activity {
 
-    private boolean militaryTime;
     private static int SETTINGS_REQUEST = 100;
+
     private static final String MILITARY_TIME_BOOLEAN = "military_time_boolean";
+    private static final String TIME_COLOR_INTEGER = "time_color_integer";
     private static final String TAG = "clock-activity";
+
+    private boolean militaryTime = false;
+    private int timeColor = Color.BLACK;
+
     public CustomClockView customClock = null;
+    SharedPreferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_clock_view);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        militaryTime = preferences.getBoolean(MILITARY_TIME_BOOLEAN, false);
+        timeColor = preferences.getInt(TIME_COLOR_INTEGER, Color.BLACK);
+
         // find the view
         final RelativeLayout frame = (RelativeLayout) findViewById(R.id.custom_frame);
         customClock = new CustomClockView(getApplicationContext());
 
         frame.addView(customClock);
-
-        if (savedInstanceState != null){
-            savedInstanceState.getBoolean(MILITARY_TIME_BOOLEAN);
-        }
 
 
         //instantiate the time object necessary for the clock
@@ -71,18 +80,10 @@ public class CustomClockActivity extends Activity {
             }
         };
 
-        timer.schedule(doAsynchronousTask, 0, 10000); //execute in every 60000 ms
+        timer.schedule(doAsynchronousTask, 0, 1000); //execute in every 60000 ms
     }
 
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save state information with a collection of key-value pairs
-        savedInstanceState.putBoolean(MILITARY_TIME_BOOLEAN, militaryTime);
-
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
-    }
 
 
     @Override
@@ -118,8 +119,8 @@ public class CustomClockActivity extends Activity {
 
         if(requestCode == SETTINGS_REQUEST) {
             if(resultCode == RESULT_OK) {
-                Bundle bundle = data.getExtras();
-                militaryTime = bundle.getBoolean(MILITARY_TIME_BOOLEAN);
+                militaryTime = preferences.getBoolean(MILITARY_TIME_BOOLEAN, false);
+                timeColor = preferences.getInt(TIME_COLOR_INTEGER, Color.BLACK);
             }
         }
     }

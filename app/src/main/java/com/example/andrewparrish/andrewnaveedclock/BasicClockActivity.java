@@ -1,11 +1,11 @@
 package com.example.andrewparrish.andrewnaveedclock;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
@@ -13,15 +13,13 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class BasicClockActivity extends Activity {
 
     public TextView textViewDate;
     public TextView textViewTime;
     public RelativeLayout parentFrame;
+    SharedPreferences preferences;
 
     private static int SETTINGS_REQUEST = 100;
 
@@ -37,14 +35,15 @@ public class BasicClockActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_clock);
+
         parentFrame = (RelativeLayout) findViewById(R.id.parentFrame);
         textViewDate = (TextView) findViewById(R.id.textViewDate);
         textViewTime = (TextView) findViewById(R.id.textViewTime);
 
-        if (savedInstanceState != null){
-            savedInstanceState.getBoolean(MILITARY_TIME_BOOLEAN);
-            savedInstanceState.getInt(TIME_COLOR_INTEGER);
-        }
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        militaryTime = preferences.getBoolean(MILITARY_TIME_BOOLEAN, false);
+        timeColor = preferences.getInt(TIME_COLOR_INTEGER, Color.BLACK);
+
         //instantiate the time object necessary for the clock
         Thread t = new Thread() {
 
@@ -87,17 +86,11 @@ public class BasicClockActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.persistent_settings) {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
-            settingsIntent.putExtra(MILITARY_TIME_BOOLEAN, militaryTime);
-            settingsIntent.putExtra(TIME_COLOR_INTEGER, timeColor);
-
             startActivityForResult(settingsIntent, SETTINGS_REQUEST);
             return true;
         }
         else if (id == R.id.clock_view_2){
             Intent customClockIntent = new Intent(this, CustomClockActivity.class);
-            customClockIntent.putExtra(MILITARY_TIME_BOOLEAN, militaryTime);
-            customClockIntent.putExtra(TIME_COLOR_INTEGER, timeColor);
-
             startActivity(customClockIntent);
             return true;
         }
@@ -110,27 +103,10 @@ public class BasicClockActivity extends Activity {
 
         if(requestCode == SETTINGS_REQUEST) {
             if(resultCode == RESULT_OK) {
-               Bundle bundle = data.getExtras();
-               militaryTime = bundle.getBoolean(MILITARY_TIME_BOOLEAN);
-
-                if(bundle.getInt(TIME_COLOR_INTEGER) != 0) {
-                    timeColor = bundle.getInt(TIME_COLOR_INTEGER);
-                }
-
+               militaryTime = preferences.getBoolean(MILITARY_TIME_BOOLEAN, false);
+               timeColor = preferences.getInt(TIME_COLOR_INTEGER, Color.BLACK);
             }
         }
-
-
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save state information with a collection of key-value pairs
-        savedInstanceState.putBoolean(MILITARY_TIME_BOOLEAN, militaryTime);
-        savedInstanceState.putInt(TIME_COLOR_INTEGER, timeColor);
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
     }
 
     private void setTime(Time today, int color){
